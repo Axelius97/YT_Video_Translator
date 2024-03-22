@@ -1,5 +1,6 @@
 import streamlit as st
 import spacy
+import os  # Import the os module
 from youtube_transcript_api import YouTubeTranscriptApi
 from langchain import OpenAI, PromptTemplate
 from langchain.chains import LLMChain, SequentialChain
@@ -7,7 +8,6 @@ from langchain.chat_models import ChatOpenAI
 import pytube
 from moviepy.editor import VideoFileClip, AudioFileClip
 from gtts import gTTS
-import os
 from io import StringIO
 import PyPDF2
 import base64
@@ -26,6 +26,9 @@ st.set_page_config(
 )
 
 language_codes = {'Hindi': 'hi', 'Malayalam': 'ml', 'Tamil': 'ta', 'Telugu': 'te', 'Kannada': 'kn', 'Bengali': 'bn', 'Gujarati': 'gu', 'Marathi': 'mr'}
+
+# Access the OpenAI API key from environment variable
+OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
 
 def convert_func():
     if ytlink:
@@ -106,7 +109,8 @@ def mute_and_play_text_over_video(ytlink, text):
     st.video(video_bytes)
 
 def convert_lang(old_text, target_language):
-    llm = ChatOpenAI(model_name='gpt-3.5-turbo', temperature=.9, openai_api_key="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")
+    # Use the OpenAI API key from environment variable
+    llm = ChatOpenAI(model_name='gpt-3.5-turbo', temperature=.9, openai_api_key=OPENAI_API_KEY)
     prompt1 = PromptTemplate(
     template = """
                 You are given text : {texty}.\n
